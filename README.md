@@ -6,9 +6,9 @@ Este repositório é um template para os grupos da disciplina. A proposta é com
 
 ## Integrantes do grupo
 
-- Nome do integrante 1
-- Nome do integrante 2
-- Nome do integrante 3
+- Artur Sales Francisco
+- Eduardo Rauber Silva
+- Ian Poty Arandu Marques
 - Nome do integrante 4
 
 ## Estrutura do projeto
