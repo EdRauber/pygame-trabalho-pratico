@@ -6,7 +6,7 @@ A proposta deve apresentar uma ideia simples, clara e viável para ser desenvolv
 
 ## 1. Nome provisório do jogo
 
-Escreva aqui o nome provisório do jogo.
+Portugeses
 
 Exemplo:
 
@@ -16,9 +16,9 @@ Exemplo:
 
 Liste os integrantes do grupo.
 
-- Nome 1:
-- Nome 2:
-- Nome 3:
+- Nome 1: Artur Sales Francisco
+- Nome 2: Eduardo Rauber Silva
+- Nome 3: Ian Poty Arandu Marques
 - Nome 4:
 
 ## 3. Tipo de jogo
@@ -26,7 +26,6 @@ Liste os integrantes do grupo.
 Indique o tipo de jogo que será desenvolvido.
 
 Exemplos:
-
 - jogo de desviar de obstáculos;
 - jogo de coleta de itens;
 - labirinto simples;
@@ -42,7 +41,7 @@ Exemplos:
 
 Tipo escolhido pelo grupo:
 
-> Escreva aqui.
+> Jogo de rolar dados e pontuar
 
 ## 4. Descrição geral do jogo
 
@@ -57,7 +56,10 @@ Procure responder:
 
 Descrição:
 
-> Escreva aqui.
+> Tela do mapa onde o jogador pode movimentar e duelar oponentes, durante o duelo mostrar tela da partida do jogo de dados.
+> Movimento durante exploração e como jogar o jogo de dados.
+> Fazer combinações de dados e ganhar (opcional) - modelo de jogo inspirado em "farkle"
+> Dados com baixas pontuações ou nenhuma, oponentes com sorte.
 
 ## 5. Objetivo do jogador
 
@@ -75,7 +77,7 @@ Exemplos:
 
 Objetivo:
 
-> Escreva aqui.
+> Duelar o máximo de oponentes e criar a maior streak de vitórias
 
 ## 6. Regras principais
 
@@ -91,11 +93,32 @@ Exemplo:
 
 Regras do grupo:
 
-- Regra 1:
-- Regra 2:
-- Regra 3:
-- Regra 4:
-- Regra 5:
+- Regra 1: Vence quem conseguir marcar 1500 pontos primeiro
+- Regra 2: O jogo consiste em turnos, com cada turno encerrando quando o jogador decidir parar de pontuar, ou quando os dados jogados pontuarem 0
+- Regra 3: Cada jogador começa o turno com 6 dados
+- Regra 4: Tabela de pontos:
+|Dado||pontuação sozinho||pontuação com 2||pontuação com 3|
+|:---||:---------------:||:-------------:||--------------:|
+|Face 1|| 100 || 200||1000|
+|Face 2|| 0 || 0||200|
+|Face 3|| 0 || 0||300|
+|Face 4|| 0 || 0||400|
+|Face 5|| 50 || 100||500|
+|Face 6|| 0 || 0||600|
+Combinações especiais:
+1 | 2 | 3 | 4 | 5 | 6 - 1500 pontos
+1 | 2 | 3 | 4 | 5 - 750 pontos
+2 | 3 | 4 | 5 | 6 - 750 pontos
+Combinações com número repetido 3+ vezes:
+a partir de 3 faces iguais a pontuação é multiplicada por 100 baseado no número da face, e para cada dado além de 3 essa pontução duplica:
+3 faces 2 = 200
+4 faces 2 = 400
+5 faces 2 = 800 
+- Regra 5: Quando pontuar o jogador pode escolher quais dados utilizar para pontuar
+exemplo:
+1 | 2 | 2 | 5 | 1 | 3 = pode pontuar - 50 (1 face 5) / 100 (1 face 1) / 150 (1 face 1 & 1 face 5) / 200 (2 face 1) / 250 (2 face 1 & 1 face 5)
+- Regra 6: Depois de pontuar o jogador pode continuar jogando com os dados restantes (os que não foram utilizados para pontuar) ou guardar os pontos ganhos nesse turno
+
 
 ## 7. Condição de vitória
 
@@ -111,7 +134,7 @@ Exemplos:
 
 Condição de vitória:
 
-> Escreva aqui.
+> 1500 pontos em um jogo
 
 ## 8. Condição de derrota ou encerramento
 
@@ -127,7 +150,7 @@ Exemplos:
 
 Condição de derrota ou encerramento:
 
-> Escreva aqui.
+> oponente pontuar 1500 pontos antes do jogador
 
 ## 9. Elementos previstos no jogo
 
@@ -141,7 +164,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> Um personagem controlado pelas setas do teclado & interface da partida
 
 ## Obstáculos, inimigos ou desafios
 
@@ -151,7 +174,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> inimigos aparecem aleatóriamente no mapa
 
 ## Itens, alvos ou objetos de interação
 
@@ -161,7 +184,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> nada ainda
 
 ## Pontuação, vidas, tempo ou progresso
 
@@ -171,7 +194,7 @@ Exemplo:
 
 Descrição:
 
-> Escreva aqui.
+> Streak de vitórias
 
 ## 10. Controles previstos
 
@@ -188,9 +211,21 @@ Exemplo:
 
 Controles do grupo:
 
-- Tecla/comando:
-- Tecla/comando:
-- Tecla/comando:
+- Seta para cima: mover para cima
+- Seta para baixo: mover para baixo
+- Seta para esquerda: mover para esquerda
+- Seta para direita: mover para direita
+- Espaço: duelar oponente
+- ESC: sair do jogo
+- num 1: escolher o dado na posição 1
+- num 2: escolher o dado na posição 2
+- num 3: escolher o dado na posição 3
+- num 4: escolher o dado na posição 4
+- num 5: escolher o dado na posição 5
+- num 6: escolher o dado na posição 6
+- E: pontuar com os dados selecionados
+- Enter: pontuar e encerrar o turno
+- R: rolar os dados
 
 ## 11. Organização inicial do código
 
@@ -206,7 +241,13 @@ Exemplo:
 
 Organização planejada:
 
-> Escreva aqui.
+> 
+- `main.py`: inicia o jogo;
+- `src/mapa.py`: contém o loop principal do mapa;
+- `src/jogo.py`: contém o loop principal da partida;
+- `src/config.py`: guarda configurações como tamanho da tela e cores;
+- `src/funcoes.py`: contém funções auxiliares;
+- `src/dados.py`: contém funções de leitura e escrita de arquivos.
 
 
 ## 12. Recursos externos previstos
@@ -222,7 +263,9 @@ Exemplo:
 
 Recursos previstos:
 
-> Escreva aqui.
+> biblioteca random
+> imagens & fontes para estilizar
+> bootstrap
 
 Caso não pretenda utilizar recursos externos, escreva:
 
@@ -245,9 +288,9 @@ Exemplos:
 
 Dificuldades previstas:
 
-- Dificuldade 1:
-- Dificuldade 2:
-- Dificuldade 3:
+- Dificuldade 1: organização do código
+- Dificuldade 2: interface funcional
+- Dificuldade 3: IA básica do oponente
 
 ## 14. Escopo mínimo para a entrega final
 
@@ -261,7 +304,7 @@ Exemplo:
 
 Escopo mínimo:
 
-> Escreva aqui.
+> A versão mínima do jogo terá um sitema de streak para cada vitória, um mapa pequeno para andar e duelar oponentes, e um sistema de dados funcional, com uma tela mostrando a streak mais alta quando for fechar o jogo.
 
 ## 15. Possíveis melhorias, caso haja tempo
 
@@ -281,6 +324,8 @@ Exemplos:
 
 Melhorias possíveis:
 
-- Melhoria 1:
-- Melhoria 2:
-- Melhoria 3:
+- Melhoria 1: Dados especiais
+- Melhoria 2: Modo História (beta)
+- Melhoria 3: Nomes de ranque
+- Melhoria 4: moeda de jogo
+- Melhoria 5: menu de pausa
