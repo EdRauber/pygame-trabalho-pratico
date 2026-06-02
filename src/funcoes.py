@@ -1,3 +1,11 @@
+import random
+
+
+def rolar_dados(quantidade):
+    """Gera uma lista com 'quantidade' valores aleatórios entre 1 e 6."""
+    return [random.randint(1, 6) for _ in range(quantidade)]
+
+
 def calcular_pontos(pontos_atual, pontos_ganhos):
     """Soma os pontos ganhos à pontuação atual."""
     return pontos_atual + pontos_ganhos
