@@ -8,6 +8,7 @@ TITULO_JOGO = "Portugeses"
 BRANCO = (255, 255, 255)
 PRETO = (0, 0, 0)
 CINZA = (212, 212, 212)
+AMARELO = (255, 215, 0)
 
 CAMINHO_RECORDE = "data/recorde.txt"
 

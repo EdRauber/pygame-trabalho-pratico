@@ -1,9 +1,13 @@
 import random
 
-
 def rolar_dados(quantidade):
-    """Gera uma lista com 'quantidade' valores aleatórios entre 1 e 6."""
-    return [random.randint(1, 6) for _ in range(quantidade)]
+    dados = []
+    for _ in range(quantidade):
+        dados.append({
+            "valor": random.randint(1, 6),
+            "selecionado": False
+        })
+    return dados
 
 
 def calcular_pontos(pontos_atual, pontos_ganhos):
