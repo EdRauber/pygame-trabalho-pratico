@@ -60,5 +60,7 @@ def definir_combinacoes(dados_escolhidos):
     
     return valor
 
-lista = [1,2,3,4,1,1]
-print(definir_combinacoes(lista))
+# ── Teste manual (não executa ao importar o módulo) ──────────────────────────
+if __name__ == "__main__":
+    lista = [1,2,3,4,1,1]
+    print(definir_combinacoes(lista))

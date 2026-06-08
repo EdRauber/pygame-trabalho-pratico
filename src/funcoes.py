@@ -1,5 +1,6 @@
 import random
 
+
 def rolar_dados(quantidade):
     dados = []
     for _ in range(quantidade):
@@ -8,6 +9,21 @@ def rolar_dados(quantidade):
             "selecionado": False
         })
     return dados
+
+
+def tem_pontuacao(valores):
+    """Retorna True se ao menos uma combinação pontuável existe nos valores rolados.
+    Usado para detectar derrota: se retornar False, o jogador perdeu a rodada.
+    """
+    contagem = [0] * 7          # índice 1–6
+    for v in valores:
+        contagem[v] += 1
+    if contagem[1] > 0 or contagem[5] > 0:   # 1s e 5s sempre pontuam
+        return True
+    for v in range(2, 7):                     # qualquer trinca pontua
+        if contagem[v] >= 3:
+            return True
+    return False
 
 
 def calcular_pontos(pontos_atual, pontos_ganhos):
