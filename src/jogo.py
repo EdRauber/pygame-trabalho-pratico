@@ -7,6 +7,7 @@ from src.config import (
     TITULO_JOGO,
     PRETO,
     BRANCO,
+    CINZA,
     AMARELO,
     TAMANHO_DADO,
     ESPACO_DADO,
