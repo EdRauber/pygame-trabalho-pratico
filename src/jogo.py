@@ -52,9 +52,12 @@ def executar_jogo():
     # "decisao"      → seleção válida, espera [1] ou [2]
     # "derrota"       → jogada sem pontos possíveis, perdeu a rodada
     # "guardou"      → pontos guardados, aguarda tecla para novo turno
-    estado = "selecionando"
+    # "inicio"      →  tela inicial da partida
+    # "vitoria"      → jogador vence com 1500 pontos
+    # "vitoria_rodada" → jogador faz 1500 pontos em uma única rolagem
+    estado = "inicio"
 
-
+    pontuacao_vitoria = 1500
 
     rodando = True
 
@@ -84,6 +87,16 @@ def executar_jogo():
                     dados         = rolar_dados(6)
                     pontos_rodada = 0
                     estado        = "selecionando"
+
+                elif estado in ("inicio"):
+                    dados = rolar_dados(6)
+                    estado = "selecionando"
+
+                elif estado in ("vitoria", "vitoria_rodada"):
+                    pontuacao_total = 0
+                    pontos_rodada = 0
+                    dados = rolar_dados(6)
+                    estado = "inicio"
                 
                 elif estado == "decisao":
                    if evento.key == pygame.K_1:          # ── [1] Continuar
@@ -100,8 +113,17 @@ def executar_jogo():
                 elif evento.key == pygame.K_2:        # ── [2] Guardar
                     ultimo_ganho     = pontos_rodada + pontos_combo
                     pontuacao_total += ultimo_ganho
+
+                    valores_sel_ordenados = sorted(valores_sel)
+
+                    if valores_sel_ordenados == [1, 2, 3, 4, 5, 6]:
+                        estado = "vitoria_rodada"
+                    elif pontuacao_total >= pontuacao_vitoria:
+                        estado = "vitoria"
+                    else:
+                        estado           = "guardou"
+
                     pontos_rodada    = 0
-                    estado           = "guardou"
 
             elif evento.type == pygame.MOUSEBUTTONDOWN:
                 if estado in ("selecionando", "decisao"):
@@ -143,8 +165,23 @@ def executar_jogo():
             inst = "[1] Continuar jogando   [2] Guardar pontos"
         elif estado == "derrota":
             msg  = "DERROTA!  Pontos da rodada perdidos."
-            cor  = VERMELHO
+            tela.fill(VERMELHO)
+            cor  = BRANCO
             inst = "Pressione qualquer tecla para continuar"
+        elif estado == "inicio":
+            msg = "PARTIDA INICIADA!"
+            cor = BRANCO
+            inst = "Pressione qualquer tecla para iniciar"
+        elif estado == "vitoria":
+            msg = "VOCÊ VENCEU!"
+            tela.fill(VERDE)
+            cor = BRANCO
+            inst = "Pressione qualquer tecla para jogar novamente"
+        elif estado == "vitoria_rodada":
+            msg = "INCRÍVEL! PONTUAÇÃO ESPECIAL!"
+            tela.fill(AMARELO)
+            cor = BRANCO
+            inst = "Pressione qualquer tecla para jogar novamente"
         else:  # guardou
             msg  = f"+{ultimo_ganho} pts guardados!"
             cor  = VERDE
