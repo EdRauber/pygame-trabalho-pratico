@@ -22,6 +22,7 @@ from src.funcoes import (
 )
 from src.combinacoes import definir_combinacoes
 from src.dados import salvar_ranking, carregar_ranking
+from src.inimigo import jogar_turno as inimigo_jogar
 
 VERDE    = (100, 220, 100)
 VERMELHO = (220, 80, 80)
@@ -40,10 +41,13 @@ def executar_jogo():
     f_inst   = pygame.font.SysFont(None, 24)
     relogio  = pygame.time.Clock()
 
-    dados           = rolar_dados(6)
-    pontos_rodada   = 0
-    pontuacao_total = 0
-    ultimo_ganho    = 0
+    dados                = rolar_dados(6)
+    pontos_rodada        = 0
+    pontuacao_total      = 0
+    ultimo_ganho         = 0
+    pontuacao_inimigo    = 0
+    ultimo_ganho_inimigo = 0
+    desc_inimigo         = ""
 
     estado = "inicio"
     pontuacao_vitoria = 1500
@@ -66,17 +70,36 @@ def executar_jogo():
             elif evento.type == pygame.KEYDOWN:
 
                 if estado in ("derrota", "guardou"):
+                    # Vez do inimigo
+                    ganho, desc          = inimigo_jogar(pontuacao_inimigo, pontuacao_vitoria)
+                    pontuacao_inimigo    += ganho
+                    ultimo_ganho_inimigo  = ganho
+                    desc_inimigo          = desc
                     dados         = rolar_dados(6)
                     pontos_rodada = 0
-                    estado        = "selecionando"
+                    if pontuacao_inimigo >= pontuacao_vitoria:
+                        estado = "inimigo_vitoria"
+                    else:
+                        estado = "inimigo_resultado"
+
+                elif estado == "inimigo_resultado":
+                    estado = "selecionando"
+
+                elif estado == "inimigo_vitoria":
+                    pontuacao_total   = 0
+                    pontuacao_inimigo = 0
+                    pontos_rodada     = 0
+                    dados  = rolar_dados(6)
+                    estado = "inicio"
 
                 elif estado == "inicio":
                     dados  = rolar_dados(6)
                     estado = "selecionando"
 
                 elif estado == "ranking":
-                    pontuacao_total = 0
-                    pontos_rodada   = 0
+                    pontuacao_total   = 0
+                    pontuacao_inimigo = 0
+                    pontos_rodada     = 0
                     dados  = rolar_dados(6)
                     estado = "inicio"
 
@@ -125,11 +148,40 @@ def executar_jogo():
             relogio.tick(FPS)
             continue
 
+        # ── Renderização especial: turno do inimigo ─────────────────────────
+        if estado in ("inimigo_resultado", "inimigo_vitoria"):
+            tela.fill(VERMELHO if estado == "inimigo_vitoria" else PRETO)
+
+            titulo_msg = "INIMIGO VENCEU!" if estado == "inimigo_vitoria" else "TURNO DO INIMIGO"
+            s = f_grande.render(titulo_msg, True, BRANCO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 80))
+
+            cor_desc = AMARELO if ultimo_ganho_inimigo > 0 else VERMELHO
+            if estado == "inimigo_vitoria":
+                cor_desc = BRANCO
+            s = f_medio.render(desc_inimigo, True, cor_desc)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 200))
+
+            placar = f"Voce: {pontuacao_total}   Inimigo: {pontuacao_inimigo}"
+            s = f_medio.render(placar, True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 290))
+
+            s = f_inst.render("Pressione qualquer tecla para continuar", True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 420))
+
+            pygame.display.flip()
+            relogio.tick(FPS)
+            continue
+
         tela.fill(PRETO)
         centralizar_dados(dados)
 
-        s = f_grande.render(f"Total: {pontuacao_total}", True, BRANCO)
-        tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 25))
+        # Placar: jogador (esquerda) e inimigo (direita)
+        s = f_grande.render(f"Voce: {pontuacao_total}", True, BRANCO)
+        tela.blit(s, (30, 25))
+
+        s = f_grande.render(f"Inimigo: {pontuacao_inimigo}", True, VERMELHO)
+        tela.blit(s, (LARGURA_TELA - s.get_width() - 30, 25))
 
         s = f_medio.render(f"Rodada: {pontos_rodada}", True, CINZA)
         tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 100))
@@ -155,15 +207,15 @@ def executar_jogo():
             tela.fill(VERMELHO)
             msg  = "DERROTA!  Pontos da rodada perdidos."
             cor  = BRANCO
-            inst = "Pressione qualquer tecla para continuar"
+            inst = "Pressione qualquer tecla para vez do inimigo"
         elif estado == "inicio":
             msg  = "PARTIDA INICIADA!"
             cor  = BRANCO
             inst = "Pressione qualquer tecla para iniciar"
-        else:
+        else:  # guardou
             msg  = f"+{ultimo_ganho} pts guardados!"
             cor  = VERDE
-            inst = "Pressione qualquer tecla para continuar"
+            inst = "Pressione qualquer tecla para vez do inimigo"
 
         s = f_medio.render(msg, True, cor)
         tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 350))
