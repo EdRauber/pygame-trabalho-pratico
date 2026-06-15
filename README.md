@@ -26,7 +26,7 @@ Descreva brevemente a ideia principal do jogo.
 
 Exemplo:
 
-> O jogo consiste em controlar um personagem que deve coletar moedas e evitar obstáculos. O jogador ganha pontos ao coletar itens e perde vidas ao colidir com obstáculos. A partida termina quando o tempo acaba ou quando o jogador perde todas as vidas.
+> O jogo consiste em principalmente um jogo de dados onde o jogador consegue pontuar fazendo combinações especificas dea dados
 
 ## Objetivo do jogador
 
@@ -34,7 +34,7 @@ Explique o que o jogador precisa fazer para vencer ou avançar no jogo.
 
 Exemplo:
 
-> O objetivo é coletar a maior quantidade possível de itens antes que o tempo acabe, evitando colisões com os obstáculos.
+> O objetivo é fazer 1500 antes do seu adversário, ou tentar pontuar o mais alto possível
 
 ## Regras do jogo
 
@@ -42,10 +42,10 @@ Liste as principais regras do jogo.
 
 Exemplo:
 
-- O jogador se movimenta usando as setas do teclado.
-- Cada item coletado aumenta a pontuação.
-- Colidir com um obstáculo reduz a quantidade de vidas.
-- A partida termina quando o jogador perde todas as vidas ou quando o tempo acaba.
+- O jogador seleciona os dados com o click esquerdo
+- Cada lance tem possibilidades diferentes de pontuação
+- ao vencer é possível adicionar seu nome e pontuação ao placar
+- A partida termina quando o jogador ou o inimigo pontuar pelo menos 1500 pontos
 
 ## Controles
 
@@ -53,12 +53,9 @@ Informe as teclas ou comandos utilizados no jogo.
 
 Exemplo:
 
-- Seta para cima: mover para cima
-- Seta para baixo: mover para baixo
-- Seta para esquerda: mover para esquerda
-- Seta para direita: mover para direita
-- Espaço: realizar ação
-- ESC: sair do jogo
+- click esquerdo: escolher inimigo/dados
+- number pad 1: guardar e continuar turno
+- number pad 2: guardar e encerrar turno
 
 ## Como executar o projeto
 
