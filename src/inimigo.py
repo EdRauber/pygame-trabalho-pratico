@@ -1,24 +1,22 @@
 from src.combinacoes import definir_combinacoes
 from src.funcoes import rolar_dados, tem_pontuacao
+from itertools import combinations
  
 # Inimigo guarda pontos quando acumula pelo menos esse valor na rodada
 LIMIAR_GUARDAR = 300
  
  
 def _melhor_selecao(valores):
-    """Encontra o subconjunto de dados que maximiza a pontuação.
-    Testa todas as 2^n combinações possíveis (n <= 6, logo no máximo 63 testes).
-    """
-    n = len(valores)
+    """Encontra o subconjunto de dados que maximiza a pontuação."""
     melhor_pts = 0
     melhor_sub = []
  
-    for mask in range(1, 1 << n):
-        sub = [valores[i] for i in range(n) if mask & (1 << i)]
-        pts = definir_combinacoes(sub)
-        if pts > melhor_pts:
-            melhor_pts = pts
-            melhor_sub = sub
+    for tamanho in range(1, len(valores) + 1):
+        for sub in combinations(valores, tamanho):
+            pts = definir_combinacoes(sub)
+            if pts > melhor_pts:
+                melhor_pts = pts
+                melhor_sub = list(sub)
  
     return melhor_sub, melhor_pts
  
