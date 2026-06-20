@@ -11,6 +11,7 @@ CINZA = (212, 212, 212)
 AMARELO = (255, 215, 0)
 
 CAMINHO_RECORDE = "data/recorde.txt"
+CAMINHO_RANKING = "data/ranking.txt"
 
 # Configurações dos dados
 TAMANHO_DADO = 80
