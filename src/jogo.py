@@ -11,6 +11,7 @@ from src.config import (
     AMARELO,
     TAMANHO_DADO,
     CAMINHO_RANKING,
+    CAMINHO_MUSICA_LUTA,
 )
 from src.funcoes import (
     rolar_dados,
@@ -34,6 +35,9 @@ def executar_jogo():
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption(TITULO_JOGO)
+
+    pygame.mixer.music.load(CAMINHO_MUSICA_LUTA)
+    pygame.mixer.music.play(-1)
 
     f_grande = pygame.font.SysFont(None, 42)
     f_medio  = pygame.font.SysFont(None, 36)

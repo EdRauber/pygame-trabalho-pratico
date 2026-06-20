@@ -4,8 +4,7 @@ from src.config import (
     LARGURA_TELA,
     ALTURA_TELA,
     FPS,
-    PRETO,
-    BRANCO,
+    CAMINHO_MUSICA_MAPA,
     CINZA,
 )
 from src.inimigos import gerar_inimigos, reposicionar_inimigo
@@ -18,6 +17,9 @@ def executar_mapa():
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption("Mapa")
+
+    pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
+    pygame.mixer.music.play(-1)
 
 
     """Carrega as imagens dos inimigos e redimensiona"""
