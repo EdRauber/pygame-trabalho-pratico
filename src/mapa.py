@@ -4,11 +4,12 @@ from src.config import (
     LARGURA_TELA,
     ALTURA_TELA,
     FPS,
-    CAMINHO_MUSICA_MAPA,
+    CAMINHO_MUSICA_LUTA,
     CINZA,
 )
 from src.inimigos import gerar_inimigos, reposicionar_inimigo
 from src.jogo import executar_jogo
+from src.funcoes import transicao_batalha
 
 
 def executar_mapa():
@@ -17,9 +18,6 @@ def executar_mapa():
 
     tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption("Mapa")
-
-    pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
-    pygame.mixer.music.play(-1)
 
 
     """Carrega as imagens dos inimigos e redimensiona"""
@@ -106,8 +104,12 @@ def executar_mapa():
 
             elif evento.type == pygame.KEYDOWN:
                 if evento.key == pygame.K_RETURN and inimigo_proximo:
-                    executar_jogo()
-                    reposicionar_inimigo(inimigo, inimigos, imagens_inimigos)
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.load(CAMINHO_MUSICA_LUTA)
+                    pygame.mixer.music.play(-1)
+                    transicao_batalha(tela, sprites_player["parado_baixo"], inimigo_proximo["imagem"], duracao_ms=1800)
+                    executar_jogo(tela)
+                    reposicionar_inimigo(inimigo_proximo, inimigos, imagens_inimigos)
 
         """Movimenta o player no espaço da tela"""
         teclas = pygame.key.get_pressed()

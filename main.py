@@ -1,6 +1,6 @@
-from src.mapa import executar_mapa
+from src.menu import executar_menu
 
 
 if __name__ == "__main__":
     # Ponto de entrada da aplicação.
-    executar_mapa()
+    executar_menu()

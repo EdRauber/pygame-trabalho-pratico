@@ -29,16 +29,13 @@ VERDE    = (100, 220, 100)
 VERMELHO = (220, 80, 80)
 
 
-def executar_jogo():
+def executar_jogo(tela=None):
     """Executa o loop principal do jogo com exibição e rolagem dos dados."""
     pygame.init()
 
-    tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
+    if tela is None:
+        tela = pygame.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pygame.display.set_caption(TITULO_JOGO)
-
-    pygame.mixer.music.load(CAMINHO_MUSICA_LUTA)
-    pygame.mixer.music.play(-1)
-
     f_grande = pygame.font.SysFont(None, 42)
     f_medio  = pygame.font.SysFont(None, 36)
     f_dado   = pygame.font.SysFont(None, 48)
@@ -56,6 +53,50 @@ def executar_jogo():
     estado = "inicio"
     pontuacao_vitoria = 1500
     rodando = True
+
+    # Fade in de preto para a tela dos dados
+    dados_temp = rolar_dados(6)
+    centralizar_dados(dados_temp)
+    fade_surf = pygame.Surface((LARGURA_TELA, ALTURA_TELA))
+    fade_surf.fill((0, 0, 0))
+    inicio_fade = pygame.time.get_ticks()
+    DURACAO_FADE = 400
+    while True:
+        elapsed_fade = pygame.time.get_ticks() - inicio_fade
+        alpha = max(0, int((1 - elapsed_fade / DURACAO_FADE) * 255))
+
+        tela.fill(PRETO)
+
+        # Placar
+        s = f_grande.render(f"Voce: 0", True, BRANCO)
+        tela.blit(s, (30, 25))
+        s = f_grande.render(f"Inimigo: 0", True, VERMELHO)
+        tela.blit(s, (LARGURA_TELA - s.get_width() - 30, 25))
+        s = f_medio.render(f"Rodada: 0", True, CINZA)
+        tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 100))
+
+        # Dados
+        for d in dados_temp:
+            pygame.draw.rect(tela, BRANCO, d["rect"], border_radius=10)
+            t = f_dado.render(str(d["valor"]), True, PRETO)
+            tela.blit(t, (
+                d["rect"].x + TAMANHO_DADO // 2 - t.get_width() // 2,
+                d["rect"].y + TAMANHO_DADO // 2 - t.get_height() // 2,
+            ))
+
+        # Mensagem de estado inicial
+        s = f_medio.render("PARTIDA INICIADA!", True, BRANCO)
+        tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 350))
+        s = f_inst.render("Pressione qualquer tecla para iniciar", True, CINZA)
+        tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 420))
+
+        fade_surf.set_alpha(alpha)
+        tela.blit(fade_surf, (0, 0))
+        pygame.display.flip()
+        relogio.tick(FPS)
+        if alpha == 0:
+            break
+    dados = dados_temp
 
     while rodando:
 
