@@ -166,7 +166,8 @@ def executar_mapa():
                 inimigo_proximo = inimigo
                 break
 
-        tela.fill((30, 30, 30))
+        fundo = pygame.image.load("assets/imagens/fundo_mapa.png").convert_alpha()
+        tela.blit(fundo, (0,0))
 
         for inimigo in inimigos:
             tela.blit(inimigo["imagem"], inimigo["rect"])
