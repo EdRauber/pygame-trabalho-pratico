@@ -131,11 +131,25 @@ def executar_jogo(tela=None):
                     estado = "selecionando"
 
                 elif estado == "inimigo_vitoria":
-                    pontuacao_total   = 0
-                    pontuacao_inimigo = 0
-                    pontos_rodada     = 0
-                    dados  = rolar_dados(6)
-                    estado = "inicio"
+                    # Primeiro mostra a tela de derrota do jogo.
+                    # Depois de qualquer tecla, vai para a tela de escolha.
+                    estado = "pergunta_derrota"
+
+                elif estado == "pergunta_derrota":
+                    if evento.key == pygame.K_1:
+                        # Continua jogando: reinicia a batalha, como o código antigo fazia.
+                        pontuacao_total      = 0
+                        pontuacao_inimigo    = 0
+                        pontos_rodada        = 0
+                        ultimo_ganho         = 0
+                        ultimo_ganho_inimigo = 0
+                        desc_inimigo         = ""
+                        dados                = rolar_dados(6)
+                        estado               = "inicio"
+
+                    elif evento.key == pygame.K_2:
+                        # Desiste: sai da batalha e volta para o mapa.
+                        return "desistiu"
 
                 elif estado == "inicio":
                     dados  = rolar_dados(6)
@@ -211,8 +225,33 @@ def executar_jogo(tela=None):
             s = f_medio.render(placar, True, CINZA)
             tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 290))
 
-            s = f_inst.render("Pressione qualquer tecla para continuar", True, CINZA)
+            texto_inst = "Pressione qualquer tecla para ver as opcoes" if estado == "inimigo_vitoria" else "Pressione qualquer tecla para continuar"
+            s = f_inst.render(texto_inst, True, CINZA)
             tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 420))
+
+            pygame.display.flip()
+            relogio.tick(FPS)
+            continue
+
+        # ── Renderização especial: perdeu o jogo e deve escolher ──────────────
+        if estado == "pergunta_derrota":
+            tela.fill(PRETO)
+
+            s = f_grande.render("VOCE PERDEU!", True, VERMELHO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 90))
+
+            s = f_medio.render("Deseja continuar jogando?", True, BRANCO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 210))
+
+            placar = f"Voce: {pontuacao_total}   Inimigo: {pontuacao_inimigo}"
+            s = f_inst.render(placar, True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 285))
+
+            s = f_medio.render("[1] Continuar", True, VERDE)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 365))
+
+            s = f_medio.render("[2] Desistir e voltar ao mapa", True, AMARELO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 415))
 
             pygame.display.flip()
             relogio.tick(FPS)

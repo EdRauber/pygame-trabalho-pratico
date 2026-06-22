@@ -5,6 +5,7 @@ from src.config import (
     ALTURA_TELA,
     FPS,
     CAMINHO_MUSICA_LUTA,
+    CAMINHO_MUSICA_MAPA,
     CINZA,
 )
 from src.inimigos import gerar_inimigos, reposicionar_inimigo
@@ -96,6 +97,7 @@ def executar_mapa():
     frame = 0
     contador_movimento = 0
     imagem_player = sprites_player["parado_baixo"]
+    inimigo_proximo = None
 
     while rodando:
         for evento in pygame.event.get():
@@ -108,8 +110,24 @@ def executar_mapa():
                     pygame.mixer.music.load(CAMINHO_MUSICA_LUTA)
                     pygame.mixer.music.play(-1)
                     transicao_batalha(tela, sprites_player["parado_baixo"], inimigo_proximo["imagem"], duracao_ms=1800)
-                    executar_jogo(tela)
+                    resultado_batalha = executar_jogo(tela)
+                    pygame.display.set_caption("Mapa")
+
+                    # Se o jogador desistiu, volta para o mapa sem resetar posição nem inimigos.
+                    if resultado_batalha == "desistiu":
+                        pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
+                        pygame.mixer.music.play(-1)
+                        continue
+
+                    # Se a janela foi fechada durante a batalha, encerra também o mapa.
+                    if resultado_batalha == "sair":
+                        rodando = False
+                        continue
+
+                    # Fluxo antigo: depois de uma batalha concluída, reposiciona o inimigo.
                     reposicionar_inimigo(inimigo_proximo, inimigos, imagens_inimigos)
+                    pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
+                    pygame.mixer.music.play(-1)
 
         """Movimenta o player no espaço da tela"""
         teclas = pygame.key.get_pressed()
