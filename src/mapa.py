@@ -124,8 +124,14 @@ def executar_mapa():
                         rodando = False
                         continue
 
-                    # Fluxo antigo: depois de uma batalha concluída, reposiciona o inimigo.
-                    reposicionar_inimigo(inimigo_proximo, inimigos, imagens_inimigos)
+                    # Se a batalha terminou com vitória, com ranking ou sem ranking,
+                    # volta para o mapa sem resetar posição nem inimigos.
+                    if resultado_batalha in ("vitoria", "sem_ranking"):
+                        pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
+                        pygame.mixer.music.play(-1)
+                        continue
+
+                    # Fluxo de segurança: qualquer outro retorno concluído também volta ao mapa.
                     pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
                     pygame.mixer.music.play(-1)
 

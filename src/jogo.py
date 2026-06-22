@@ -29,6 +29,21 @@ VERDE    = (100, 220, 100)
 VERMELHO = (220, 80, 80)
 
 
+def pontos_para_entrar_no_ranking(pontuacao, ranking, limite=5):
+    """Retorna 0 se a pontuacao entra no ranking; caso contrario, retorna quanto faltou."""
+    ranking_ordenado = sorted(ranking, key=lambda entrada: entrada[2], reverse=True)
+
+    if len(ranking_ordenado) < limite:
+        return 0
+
+    menor_pontuacao_top = ranking_ordenado[limite - 1][2]
+
+    if pontuacao > menor_pontuacao_top:
+        return 0
+
+    return menor_pontuacao_top - pontuacao + 1
+
+
 def executar_jogo(tela=None):
     """Executa o loop principal do jogo com exibição e rolagem dos dados."""
     pygame.init()
@@ -49,6 +64,7 @@ def executar_jogo(tela=None):
     pontuacao_inimigo    = 0
     ultimo_ganho_inimigo = 0
     desc_inimigo         = ""
+    pontos_faltando_ranking = 0
 
     estado = "inicio"
     pontuacao_vitoria = 1500
@@ -110,7 +126,7 @@ def executar_jogo(tela=None):
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
-                rodando = False
+                return "sair"
 
             elif evento.type == pygame.KEYDOWN:
 
@@ -156,11 +172,12 @@ def executar_jogo(tela=None):
                     estado = "selecionando"
 
                 elif estado == "ranking":
-                    pontuacao_total   = 0
-                    pontuacao_inimigo = 0
-                    pontos_rodada     = 0
-                    dados  = rolar_dados(6)
-                    estado = "inicio"
+                    # Depois de ver o ranking, volta para o mapa.
+                    return "vitoria"
+
+                elif estado == "sem_ranking":
+                    # Depois de ver que a pontuacao nao entrou no ranking, volta para o mapa.
+                    return "sem_ranking"
 
                 elif estado == "decisao":
                     if evento.key == pygame.K_1:
@@ -188,10 +205,19 @@ def executar_jogo(tela=None):
                             estado = "guardou"
 
                         if estado in ("vitoria", "vitoria_rodada"):
-                            titulo = titulo_por_pontuacao(pontuacao_total)
-                            nome   = pedir_nome(tela, f_medio, f_inst)
-                            salvar_ranking(CAMINHO_RANKING, nome, titulo, pontuacao_total)
-                            estado = "ranking"
+                            ranking_atual = carregar_ranking(CAMINHO_RANKING)
+                            pontos_faltando_ranking = pontos_para_entrar_no_ranking(
+                                pontuacao_total,
+                                ranking_atual,
+                            )
+
+                            if pontos_faltando_ranking == 0:
+                                titulo = titulo_por_pontuacao(pontuacao_total)
+                                nome   = pedir_nome(tela, f_medio, f_inst)
+                                salvar_ranking(CAMINHO_RANKING, nome, titulo, pontuacao_total)
+                                estado = "ranking"
+                            else:
+                                estado = "sem_ranking"
 
             elif evento.type == pygame.MOUSEBUTTONDOWN:
                 if estado in ("selecionando", "decisao"):
@@ -203,6 +229,35 @@ def executar_jogo(tela=None):
         if estado == "ranking":
             ranking = carregar_ranking(CAMINHO_RANKING)
             desenhar_ranking(tela, (f_grande, f_medio, f_inst), ranking)
+
+            # Substitui a instrucao antiga da tela de ranking.
+            pygame.draw.rect(tela, PRETO, (0, 520, LARGURA_TELA, 80))
+            s = f_inst.render("Pressione qualquer tecla para voltar ao mapa", True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 540))
+
+            pygame.display.flip()
+            relogio.tick(FPS)
+            continue
+
+        # ── Renderização especial: venceu, mas nao entrou no ranking ─────────
+        if estado == "sem_ranking":
+            tela.fill(PRETO)
+
+            s = f_grande.render("VOCE VENCEU!", True, VERDE)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 80))
+
+            s = f_medio.render("Pontuacao insuficiente para o Top 5", True, AMARELO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 180))
+
+            s = f_medio.render(f"Sua pontuacao: {pontuacao_total}", True, BRANCO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 260))
+
+            s = f_inst.render(f"Faltaram {pontos_faltando_ranking} pontos para entrar no ranking.", True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 330))
+
+            s = f_inst.render("Pressione qualquer tecla para voltar ao mapa", True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 430))
+
             pygame.display.flip()
             relogio.tick(FPS)
             continue
