@@ -9,6 +9,6 @@ Mantemos este arquivo reexportando as funções antigas para evitar quebrar impo
 que ainda usam `from src.funcoes import ...`.
 """
 
-from src.regras import *  # noqa: F401,F403
-from src.ui import *  # noqa: F401,F403
-from src.transicoes import *  # noqa: F401,F403
+from src.regras import *  
+from src.ui import *  
+from src.transicoes import *  

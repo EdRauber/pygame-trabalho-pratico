@@ -6,11 +6,7 @@ A proposta deve apresentar uma ideia simples, clara e viável para ser desenvolv
 
 ## 1. Nome provisório do jogo
 
-Portugeses
-
-Exemplo:
-
-> Corrida dos Obstáculos
+Portugueses
 
 ## 2. Integrantes do grupo
 
@@ -19,7 +15,6 @@ Liste os integrantes do grupo.
 - Nome 1: Artur Sales Francisco
 - Nome 2: Eduardo Rauber Silva
 - Nome 3: Ian Poty Arandu Marques
-- Nome 4:
 
 ## 3. Tipo de jogo
 
@@ -41,7 +36,7 @@ Exemplos:
 
 Tipo escolhido pelo grupo:
 
-> Jogo de rolar dados e pontuar
+> Jogo de dados inspirado em farlke
 
 ## 4. Descrição geral do jogo
 
@@ -57,7 +52,7 @@ Procure responder:
 Descrição:
 
 > Tela do mapa onde o jogador pode movimentar e duelar oponentes, durante o duelo mostrar tela da partida do jogo de dados.
-> Movimento durante exploração e como jogar o jogo de dados.
+> Movimento durante exploração e controle das ações no jogo de dados
 > Fazer combinações de dados e ganhar (opcional) - modelo de jogo inspirado em "farkle"
 > Dados com baixas pontuações ou nenhuma, oponentes com sorte.
 
@@ -77,7 +72,7 @@ Exemplos:
 
 Objetivo:
 
-> Duelar o máximo de oponentes e criar a maior streak de vitórias
+> Duelar oponentes (computadores ou jogadores reais) no jogo de dados e vencer, ou conseguir uma pontuação recordista e entrar no top 5 das maiores pontuações
 
 ## 6. Regras principais
 
@@ -118,6 +113,7 @@ a partir de 3 faces iguais a pontuação é multiplicada por 100 baseado no núm
 exemplo:
 1 | 2 | 2 | 5 | 1 | 3 = pode pontuar - 50 (1 face 5) / 100 (1 face 1) / 150 (1 face 1 & 1 face 5) / 200 (2 face 1) / 250 (2 face 1 & 1 face 5)
 - Regra 6: Depois de pontuar o jogador pode continuar jogando com os dados restantes (os que não foram utilizados para pontuar) ou guardar os pontos ganhos nesse turno
+(caso queira mais instruções elas estão presentes no menu de "instrucoes" do pygame)
 
 
 ## 7. Condição de vitória
@@ -158,13 +154,10 @@ Descreva os principais elementos que farão parte do jogo.
 
 ## Jogador ou elemento principal
 
-Exemplo:
-
-> Um personagem controlado pelas setas do teclado.
-
 Descrição:
 
-> Um personagem controlado pelas setas do teclado & interface da partida
+> Um personagem controlado por WASD.
+> Jogo de dados controlado por mouse
 
 ## Obstáculos, inimigos ou desafios
 
@@ -184,7 +177,7 @@ Exemplo:
 
 Descrição:
 
-> nada ainda
+> Duelar oponentes que aparecem & encontrar as melhores combinações de dados disponíveis
 
 ## Pontuação, vidas, tempo ou progresso
 
@@ -194,7 +187,7 @@ Exemplo:
 
 Descrição:
 
-> Streak de vitórias
+> pontuação muda durante partida, começando com 0 e com mínimo de vítoria de 1500
 
 ## 10. Controles previstos
 
@@ -202,30 +195,24 @@ Informe os comandos que serão utilizados pelo jogador.
 
 Exemplo:
 
-- Seta para cima: mover para cima
-- Seta para baixo: mover para baixo
-- Seta para esquerda: mover para esquerda
-- Seta para direita: mover para direita
-- Espaço: realizar ação
+- W: mover para cima
+- S: mover para baixo
+- A: mover para esquerda
+- D: mover para direita
+- ENTER: realizar ação
 - ESC: sair do jogo
 
 Controles do grupo:
 
-- Seta para cima: mover para cima
-- Seta para baixo: mover para baixo
-- Seta para esquerda: mover para esquerda
-- Seta para direita: mover para direita
-- Espaço: duelar oponente
+- W: mover para cima
+- S: mover para baixo
+- A: mover para esquerda
+- D: mover para direita
+- ENTER: duelar oponente
 - ESC: sair do jogo
-- num 1: escolher o dado na posição 1
-- num 2: escolher o dado na posição 2
-- num 3: escolher o dado na posição 3
-- num 4: escolher o dado na posição 4
-- num 5: escolher o dado na posição 5
-- num 6: escolher o dado na posição 6
-- E: pontuar com os dados selecionados
-- Enter: pontuar e encerrar o turno
-- R: rolar os dados
+- click esquerdo durante partida: selecionar dado
+- num_1: pontuar com os dados selecionados
+- num_2: pontuar e encerrar o turno
 
 ## 11. Organização inicial do código
 
@@ -246,8 +233,18 @@ Organização planejada:
 - `src/mapa.py`: contém o loop principal do mapa;
 - `src/jogo.py`: contém o loop principal da partida;
 - `src/config.py`: guarda configurações como tamanho da tela e cores;
-- `src/funcoes.py`: contém funções auxiliares;
-- `src/dados.py`: contém funções de leitura e escrita de arquivos.
+- `src/funcoes.py`: contém funções auxiliares (antigo - abandonado);
+- `src/dados.py`: contém funções de leitura e escrita de arquivos;
+- `src/audio.py`: controla a música durante o jogo;
+- `src/combinacoes.py`: calcula a pontuação dos lances;
+- `src/inimigo.py`: controla como o computador joga;
+- `src/inimigos.py`: controla a aparição de spirtes de oponentes no mapa;
+- `src/jogo_mutiplayer.py`: controla o fluxo de jogo no modo multiplayer;
+- `src/menu.py`: controla as opções de menu da tela principal;
+- `src/regras.py`: monitora o funcionamento das regras do jogo para condições;
+- `src/sprites.py`: arquivo abandonado;
+- `src/transicoes.py`: gera transicoes de combate super radicais;
+- `src/ui.py`: controla a interface do menu assim como o display das intruções;
 
 
 ## 12. Recursos externos previstos
@@ -264,8 +261,8 @@ Exemplo:
 Recursos previstos:
 
 > biblioteca random
-> imagens & fontes para estilizar
-> bootstrap
+> imagens & fontes para estilizar assim como modelos originais
+> biblioteca combinations
 
 Caso não pretenda utilizar recursos externos, escreva:
 

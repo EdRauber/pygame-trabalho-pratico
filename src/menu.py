@@ -22,6 +22,7 @@ from src.config import (
 from src.mapa import executar_mapa
 from src.jogo_multiplayer import executar_multiplayer
 from src.dados import carregar_ranking
+from src.audio import tocar_musica
 from src.ui import (
     NUM_PAGINAS_INSTRUCOES,
     criar_botao,
@@ -32,9 +33,8 @@ from src.ui import (
 
 
 def tocar_musica_menu():
-    """Garante que a música do menu/mapa esteja tocando."""
-    pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
-    pygame.mixer.music.play(-1)
+    """Garante que a música do menu/mapa esteja tocando com volume reduzido."""
+    tocar_musica(CAMINHO_MUSICA_MAPA)
 
 
 def executar_menu():

@@ -299,7 +299,7 @@ def desenhar_instrucoes(tela, fontes, pagina=0):
 
         _linhas(tela, f_pequena, [
             ("Regra das repeticoes com 3+ dados", AMARELO),
-            "A partir de 3 faces iguais, vale face x 100.",
+            "A partir de 3 faces iguais, valor face x 100.",
             "Cada dado extra alem do terceiro dobra a pontuacao.",
             "Exemplo: 3 faces 2 = 200, 4 faces 2 = 400, 5 faces 2 = 800.",
         ], 60, 390, CINZA, 24)
