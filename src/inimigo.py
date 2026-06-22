@@ -1,5 +1,5 @@
 from src.combinacoes import definir_combinacoes
-from src.funcoes import rolar_dados, tem_pontuacao
+from src.regras import rolar_dados, tem_pontuacao
 from itertools import combinations
  
 # Inimigo guarda pontos quando acumula pelo menos esse valor na rodada

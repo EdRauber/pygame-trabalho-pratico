@@ -13,13 +13,17 @@ from src.config import (
     CAMINHO_RANKING,
     CAMINHO_MUSICA_LUTA,
 )
-from src.funcoes import (
+from src.regras import (
     rolar_dados,
     tem_pontuacao,
     titulo_por_pontuacao,
     centralizar_dados,
+    pontos_para_entrar_no_ranking,
+)
+from src.ui import (
     desenhar_ranking,
     pedir_nome,
+    confirmar_voltar_menu,
 )
 from src.combinacoes import definir_combinacoes
 from src.dados import salvar_ranking, carregar_ranking
@@ -49,6 +53,7 @@ def executar_jogo(tela=None):
     pontuacao_inimigo    = 0
     ultimo_ganho_inimigo = 0
     desc_inimigo         = ""
+    pontos_faltando_ranking = 0
 
     estado = "inicio"
     pontuacao_vitoria = 1500
@@ -100,8 +105,18 @@ def executar_jogo(tela=None):
 
     while rodando:
 
+        valores_dados = [d["valor"] for d in dados]
         valores_sel  = [d["valor"] for d in dados if d["selecionado"]]
         pontos_combo = definir_combinacoes(valores_sel) if valores_sel else 0
+
+        # Se a rolagem atual nao tem nenhuma combinacao pontuavel,
+        # a derrota da rodada deve acontecer imediatamente.
+        # Antes, isso so era checado depois que o jogador apertava 1
+        # para continuar rolando, então mãos como 6,4,2,3,4,6
+        # podiam ficar presas na tela de seleção.
+        if estado == "selecionando" and not tem_pontuacao(valores_dados):
+            pontos_rodada = 0
+            estado = "derrota"
 
         if estado == "selecionando" and pontos_combo > 0:
             estado = "decisao"
@@ -110,9 +125,17 @@ def executar_jogo(tela=None):
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
-                rodando = False
+                return "sair"
 
             elif evento.type == pygame.KEYDOWN:
+
+                if evento.key == pygame.K_ESCAPE:
+                    escolha_menu = confirmar_voltar_menu(tela, f_medio, f_inst)
+                    if escolha_menu == "sim":
+                        return "menu_principal"
+                    if escolha_menu == "sair":
+                        return "sair"
+                    continue
 
                 if estado in ("derrota", "guardou"):
                     # Vez do inimigo
@@ -131,22 +154,37 @@ def executar_jogo(tela=None):
                     estado = "selecionando"
 
                 elif estado == "inimigo_vitoria":
-                    pontuacao_total   = 0
-                    pontuacao_inimigo = 0
-                    pontos_rodada     = 0
-                    dados  = rolar_dados(6)
-                    estado = "inicio"
+                    # Primeiro mostra a tela de derrota do jogo.
+                    # Depois de qualquer tecla, vai para a tela de escolha.
+                    estado = "pergunta_derrota"
+
+                elif estado == "pergunta_derrota":
+                    if evento.key == pygame.K_1:
+                        # Continua jogando: reinicia a batalha, como o código antigo fazia.
+                        pontuacao_total      = 0
+                        pontuacao_inimigo    = 0
+                        pontos_rodada        = 0
+                        ultimo_ganho         = 0
+                        ultimo_ganho_inimigo = 0
+                        desc_inimigo         = ""
+                        dados                = rolar_dados(6)
+                        estado               = "inicio"
+
+                    elif evento.key == pygame.K_2:
+                        # Desiste: sai da batalha e volta para o mapa.
+                        return "desistiu"
 
                 elif estado == "inicio":
                     dados  = rolar_dados(6)
                     estado = "selecionando"
 
                 elif estado == "ranking":
-                    pontuacao_total   = 0
-                    pontuacao_inimigo = 0
-                    pontos_rodada     = 0
-                    dados  = rolar_dados(6)
-                    estado = "inicio"
+                    # Depois de ver o ranking, volta para o mapa.
+                    return "vitoria"
+
+                elif estado == "sem_ranking":
+                    # Depois de ver que a pontuacao nao entrou no ranking, volta para o mapa.
+                    return "sem_ranking"
 
                 elif estado == "decisao":
                     if evento.key == pygame.K_1:
@@ -174,10 +212,19 @@ def executar_jogo(tela=None):
                             estado = "guardou"
 
                         if estado in ("vitoria", "vitoria_rodada"):
-                            titulo = titulo_por_pontuacao(pontuacao_total)
-                            nome   = pedir_nome(tela, f_medio, f_inst)
-                            salvar_ranking(CAMINHO_RANKING, nome, titulo, pontuacao_total)
-                            estado = "ranking"
+                            ranking_atual = carregar_ranking(CAMINHO_RANKING)
+                            pontos_faltando_ranking = pontos_para_entrar_no_ranking(
+                                pontuacao_total,
+                                ranking_atual,
+                            )
+
+                            if pontos_faltando_ranking == 0:
+                                titulo = titulo_por_pontuacao(pontuacao_total)
+                                nome   = pedir_nome(tela, f_medio, f_inst)
+                                salvar_ranking(CAMINHO_RANKING, nome, titulo, pontuacao_total)
+                                estado = "ranking"
+                            else:
+                                estado = "sem_ranking"
 
             elif evento.type == pygame.MOUSEBUTTONDOWN:
                 if estado in ("selecionando", "decisao"):
@@ -189,6 +236,35 @@ def executar_jogo(tela=None):
         if estado == "ranking":
             ranking = carregar_ranking(CAMINHO_RANKING)
             desenhar_ranking(tela, (f_grande, f_medio, f_inst), ranking)
+
+            # Substitui a instrucao antiga da tela de ranking.
+            pygame.draw.rect(tela, PRETO, (0, 520, LARGURA_TELA, 80))
+            s = f_inst.render("Pressione qualquer tecla para voltar ao mapa", True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 540))
+
+            pygame.display.flip()
+            relogio.tick(FPS)
+            continue
+
+        # ── Renderização especial: venceu, mas nao entrou no ranking ─────────
+        if estado == "sem_ranking":
+            tela.fill(PRETO)
+
+            s = f_grande.render("VOCE VENCEU!", True, VERDE)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 80))
+
+            s = f_medio.render("Pontuacao insuficiente para o Top 5", True, AMARELO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 180))
+
+            s = f_medio.render(f"Sua pontuacao: {pontuacao_total}", True, BRANCO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 260))
+
+            s = f_inst.render(f"Faltaram {pontos_faltando_ranking} pontos para entrar no ranking.", True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 330))
+
+            s = f_inst.render("Pressione qualquer tecla para voltar ao mapa", True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 430))
+
             pygame.display.flip()
             relogio.tick(FPS)
             continue
@@ -211,8 +287,33 @@ def executar_jogo(tela=None):
             s = f_medio.render(placar, True, CINZA)
             tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 290))
 
-            s = f_inst.render("Pressione qualquer tecla para continuar", True, CINZA)
+            texto_inst = "Pressione qualquer tecla para ver as opcoes" if estado == "inimigo_vitoria" else "Pressione qualquer tecla para continuar"
+            s = f_inst.render(texto_inst, True, CINZA)
             tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 420))
+
+            pygame.display.flip()
+            relogio.tick(FPS)
+            continue
+
+        # ── Renderização especial: perdeu o jogo e deve escolher ──────────────
+        if estado == "pergunta_derrota":
+            tela.fill(PRETO)
+
+            s = f_grande.render("VOCE PERDEU!", True, VERMELHO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 90))
+
+            s = f_medio.render("Deseja continuar jogando?", True, BRANCO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 210))
+
+            placar = f"Voce: {pontuacao_total}   Inimigo: {pontuacao_inimigo}"
+            s = f_inst.render(placar, True, CINZA)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 285))
+
+            s = f_medio.render("[1] Continuar", True, VERDE)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 365))
+
+            s = f_medio.render("[2] Desistir e voltar ao mapa", True, AMARELO)
+            tela.blit(s, (LARGURA_TELA // 2 - s.get_width() // 2, 415))
 
             pygame.display.flip()
             relogio.tick(FPS)
@@ -249,9 +350,10 @@ def executar_jogo(tela=None):
             cor  = VERDE
             inst = "[1] Continuar jogando   [2] Guardar pontos"
         elif estado == "derrota":
-            tela.fill(VERMELHO)
+            # Mantem a tela preta com os dados visiveis, igual ao multiplayer.
+            # Assim o jogador consegue ver qual rolagem veio sem pontuacao.
             msg  = "DERROTA!  Pontos da rodada perdidos."
-            cor  = BRANCO
+            cor  = VERMELHO
             inst = "Pressione qualquer tecla para vez do inimigo"
         elif estado == "inicio":
             msg  = "PARTIDA INICIADA!"

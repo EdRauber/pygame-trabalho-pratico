@@ -1,0 +1,5 @@
+# Pasta de dependências
+src/__pycache__/
+
+# Arquivo de ranking
+data/ranking.txt
