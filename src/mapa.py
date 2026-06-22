@@ -12,6 +12,7 @@ from src.inimigos import gerar_inimigos
 from src.jogo import executar_jogo
 from src.transicoes import transicao_batalha
 from src.ui import confirmar_voltar_menu
+from src.audio import tocar_musica, parar_musica
 
 
 def executar_mapa():
@@ -117,9 +118,8 @@ def executar_mapa():
                     continue
 
                 if evento.key == pygame.K_RETURN and inimigo_proximo:
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.load(CAMINHO_MUSICA_LUTA)
-                    pygame.mixer.music.play(-1)
+                    parar_musica()
+                    tocar_musica(CAMINHO_MUSICA_LUTA)
 
                     transicao_batalha(
                         tela,
@@ -134,8 +134,7 @@ def executar_mapa():
                     if resultado_batalha in ("sair", "menu_principal"):
                         return resultado_batalha
 
-                    pygame.mixer.music.load(CAMINHO_MUSICA_MAPA)
-                    pygame.mixer.music.play(-1)
+                    tocar_musica(CAMINHO_MUSICA_MAPA)
 
                     # Se o jogador venceu, mudamos o mapa: novas posicoes e novos inimigos.
                     if resultado_batalha in ("vitoria", "sem_ranking"):

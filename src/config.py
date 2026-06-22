@@ -21,3 +21,5 @@ Y_INICIAL_DADOS = 210
 
 CAMINHO_MUSICA_MAPA = "assets/sons/MENU.ogg"
 CAMINHO_MUSICA_LUTA = "assets/sons/LUTA.ogg"
+# Volume geral da música do jogo (0.0 = mudo, 1.0 = volume máximo).
+VOLUME_MUSICA = 0.5
