@@ -326,3 +326,13 @@ Melhorias possíveis:
 - Melhoria 3: Nomes de ranque
 - Melhoria 4: moeda de jogo
 - Melhoria 5: menu de pausa
+
+# BONUS: Proposta final
+
+O projeto mudou durante o seu desenvolvimento assim como suas propostas, com ele, nós prometemos entregar:
+
+- Um sistema de ranking funcional que recorda as 5 maiores pontuações
+- Um sistema de duelo sem defeitos severos com opção para duelar o computador ou jogadores localmente
+- Musica e animações para melhor qualidade de jogo
+- Um meno com instruções de como jogar
+- Um sistema de pausa e de desistencia para o jogador nunca ficar preso
